@@ -1,0 +1,84 @@
+#!/usr/bin/env python2
+
+from optparse import OptionParser
+import os
+import sys
+import smart
+from pprint import pprint
+
+def disk_dump(d):
+    print "Size: %d bytes" % (d.get_size(False))
+    print "Size: %d MiB" % (d.get_size(True))
+    identify_data = d.get_identify()
+    print "Model: {model}".format(model = identify_data['model'])
+    print "Serial: {serial}".format(serial = identify_data['serial'])
+    print "Firmware: {firmware}".format(firmware = identify_data['firmware'])
+    smart_available = d.smart_is_available()
+    print "SMART Available: {smart_available}".format(smart_available = smart_available)
+    print "Awake: {awake}".format(awake = d.check_sleep_mode())
+
+    if smart_available:
+        print "SMART Disk Health Good: {good}".format(good = d.smart_status())
+
+        d.read_data()
+
+        info = d.get_info(human_readable = True)
+
+        #pprint(info)
+
+        print("Off-line Data Collection Status: [%s]" % (info['offline_data_collection_status']))
+        print("Total Time To Complete Off-Line Data Collection: %u s" % (info['total_offline_data_collection_seconds']))
+        print("Self-Test Execution Status: [%s]" % (info['self_test_execution_status']))
+        print("Percent Self-Test Remaining: %u%%" % (info['self_test_execution_percent_remaining']))
+        print("Conveyance Self-Test Available: %s" % (info['conveyance_test_available']))
+        print("Short/Extended Self-Test Available: %s" % (info['short_and_extended_test_available']))
+        print("Start Self-Test Available: %s" % (info['start_test_available']))
+        print("Abort Self-Test Available: %s" % (info['abort_test_available']))
+        print("Short Self-Test Polling Time: %u min" % (info['short_test_polling_minutes']))
+        print("Extended Self-Test Polling Time: %u min" % (info['extended_test_polling_minutes']))
+        print("Conveyance Self-Test Polling Time: %u min" % (info['conveyance_test_polling_minutes']))
+
+        print "Bad Sectors: {bad}".format(bad = d.get_bad_sectors())
+        print "Powered On: {power_on}".format(power_on = d.get_power_on())
+        print "Power Cycles: {power_cycle}".format(power_cycle = d.get_power_cycle())
+        print "Temperature: {temp}".format(temp = d.get_temperature())
+        print "Overall Status: {overall}".format(overall = d.get_overall(human_readable = True))
+
+
+        print("{id:3} {name:27} {value:^5} {worst:^5} {thres:^5} {pretty:11} {raw:14} {type:7} {updates:7} {good:4} {past_good:8}".format(
+               id = "ID#",
+               name = "Name",
+               value ="Value",
+               worst = "Worst",
+               thres = "Thres",
+               pretty = "Pretty",
+               raw = "Raw",
+               type = "Type",
+               updates = "Updates",
+               good = "Good",
+               past_good = "Good/Past"))
+        l = d.get_attributes()
+        for attr in l:        
+            print("{id:3} {name:27} {value:^5} {worst:^5} {thres:^5} {pretty:11} {raw:14} {type:7} {updates:7} {good:^4} {past_good:^8}".format(
+               id = attr['id'],
+               name = attr['name'],
+               value = attr['value'],
+               worst = attr['worst'],
+               thres = attr['threshold'],
+               pretty = attr['human_readable'],
+               raw = '0x' + ''.join('{:02x}'.format(x) for x in attr['raw']),
+               type =  attr['type'],
+               updates = attr['updates'],
+               good = attr['good'],
+               past_good = attr['past']))
+
+if __name__ == '__main__':
+    optp = OptionParser(usage = 'smartdump [options] <device>')
+    opts, argv = optp.parse_args()
+
+    if not len(argv) > 0:
+        optp.print_help()
+        print_error('no device')
+
+    d = smart.Smart(argv[0])
+    disk_dump(d)
