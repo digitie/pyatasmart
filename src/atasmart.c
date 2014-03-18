@@ -73,8 +73,7 @@ static PyObject* Smart_close(Smart* self)
 		self->d = NULL;
 	}
 
-    Py_INCREF(Py_None);
-    return Py_None;
+    Py_RETURN_NONE;
 }
 
 
@@ -702,7 +701,7 @@ static PyMethodDef Smart_methods[] = {
 static PyTypeObject PyType_Smart = {
     PyObject_HEAD_INIT(NULL)
     0,                                              /* ob_size */
-    "_smart.Smart",                                  /* tp_name */
+    "_atasmart.Smart",                                  /* tp_name */
     sizeof(Smart),                                  /* tp_basicsize */
     0,                                              /* tp_itemsize */
     (destructor)(Smart_dealloc),                    /* tp_dealloc */
@@ -749,14 +748,14 @@ static PyTypeObject PyType_Smart = {
     0                                               /* tp_del */
 };
  
-PyMODINIT_FUNC init_smart(void)
+PyMODINIT_FUNC init_atasmart(void)
 {
     PyObject* module;
 
     PyType_Ready(&PyType_Smart);
 
-    module = Py_InitModule3("_smart", NULL, SMART_DOC_STRING);
-    Smart_error = PyErr_NewException("_smart.error", NULL, NULL);
+    module = Py_InitModule3("_atasmart", NULL, SMART_DOC_STRING);
+    Smart_error = PyErr_NewException("_atasmart.error", NULL, NULL);
 
     PyModule_AddIntConstant(module, "OVERALL_GOOD", SK_SMART_OVERALL_GOOD);
     PyModule_AddIntConstant(module, "OVERALL_BAD_ATTRIBUTE_IN_THE_PAST", SK_SMART_OVERALL_BAD_ATTRIBUTE_IN_THE_PAST);

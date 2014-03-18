@@ -1,4 +1,4 @@
-import _smart
+import _atasmart
 
 class Smart(object):
     def __init__(self, dev_path):
@@ -6,15 +6,18 @@ class Smart(object):
         self.__smart = None
         self.__opened = False
 
-    def __enter__(self):
-        self.open()
-
-        return self
-    
     def open(self):
-        self.__smart = _smart.Smart(self.__dev_path)
+        self.__smart = _atasmart.Smart(self.__dev_path)
         self.__opened = True
 
+    def close(self):
+        if self.opened:
+            self.__smart.close()
+
+    def __enter__(self):      
+        self.open()
+        return self
+    
     def __exit__(self, type, value, tb):
         self.__smart.close()
         return False
@@ -116,10 +119,6 @@ class Smart(object):
         if not self.opened:
             self.open()
         return self.__smart.get_attributes()
-
-    def close(self):
-        if self.opened:
-            self.__smart.close()
 
     def is_value_reached(self, id, value):
         if not self.opened:
