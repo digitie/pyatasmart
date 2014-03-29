@@ -4,7 +4,7 @@
 pkgbase=python2-atasmart
 _pkgname=pyatasmart
 pkgname=$pkgbase-git
-pkgver=0.0.1
+pkgver=10.bf1e65e
 pkgrel=1
 pkgdesc='Simple Python binding of libatasmart'
 license=('GPL2')
@@ -24,13 +24,13 @@ pkgver() {
 build() {
     cd "$srcdir/$_pkgname"
 
-    python setup.py build
+    python2 setup.py build
 }
 
 package() {
     cd "$srcdir/$_pkgname"
 
-    python setup.py install --root=${pkgdir} --optimize=1
+    python2 setup.py install --root=${pkgdir} --optimize=1
 
     install -D -m644 LICENSE ${pkgdir}/usr/share/licenses/python2-atasmart
 }
