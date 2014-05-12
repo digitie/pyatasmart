@@ -126,6 +126,7 @@ class Smart(object):
         attr_dict = self.get_attributes()
         try:
             attr = attr_dict[id]
+            #print("{id} Disk Value : {dsk}, Target Value : {tgt}, {tf}".format(id = id, dsk = attr['value'], tgt = value, tf = attr['value'] >= value))
             if attr['value'] >= value:
                 return True
             else:
