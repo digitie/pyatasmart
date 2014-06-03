@@ -421,6 +421,10 @@ static void _disk_dump_attributes(SkDisk *d, const SkSmartAttributeParsedData *a
         Py_BuildValue("O", to_human_readable_string(a->pretty_value, a->pretty_unit)));
 
     PyDict_SetItem(dict, 
+        Py_BuildValue("s", "formatted_value"), 
+        Py_BuildValue("K", a->pretty_value));
+
+    PyDict_SetItem(dict, 
         Py_BuildValue("s", "raw"), 
         Py_BuildValue("bbbbbb", a->raw[0], a->raw[1], a->raw[2], a->raw[3], a->raw[4], a->raw[5]));
 
